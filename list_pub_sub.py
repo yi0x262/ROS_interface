@@ -3,9 +3,11 @@
 import rospy
 from std_msgs.msg import Float64,Float32MultiArray
 
+from InfoGetter import InfoGetter
+
 class list_publisher(list):
-    def __init__(self,names,queue=10):
-        for name in names:
+    def __init__(self,msgnames,queue=10):
+        for name in msgnames:
             self.append(rospy.Publisher(name,Float64,queue_size=queue))
     def __call__(self,data):
         #check
@@ -21,13 +23,16 @@ class list_publisher(list):
         for pub,datum in zip(self,data):
             pub.puslish(Float64(datum))
 
+def async_subscriber(msgname,msgtype):
+    ig = InfoGetter()
+    rospy.Subscriber(msgname,msgtype,ig)
+    return ig
+
 class list_subscriber(list):
-    def __init__(self,names,datatype):
-        for name in names:
-            ig = InfoGetter()
-            self.append(ig)
-            rospy.Subscriber(name,datatype,ig)
-    def __call__(self):
+    def __init__(self,msgnames,msgtype):
+        for name in msgnames:
+            self.append(async_subscriber(name,msgtype))
+    def get_msg(self):
         data = []
         for sub in self:
             d = sub.get_msg()

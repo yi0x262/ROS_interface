@@ -6,7 +6,7 @@ from InfoGetter import InfoGetter
 
 class clock_manager(object):
     def __init__(self):
-        self.lasttime = 0
+        self.lasttime = 0.
         self.clock = InfoGetter()
         rospy.Subscriber('/clock',Clock,self.clock)
     def __call__(self):
