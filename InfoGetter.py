@@ -1,5 +1,8 @@
 #from answers.ros.org/question/215813
 #how-to-return-an-array-from-my-subscriber-function
+
+#add set_None
+import rospy
 import threading
 class InfoGetter(object):
     """support to rospy.Subscriber, whenever&wherever can read subscribed msg"""
@@ -16,7 +19,12 @@ class InfoGetter(object):
     def get_msg(self,timeout=None):
         """Blocks until the data is rx'd with optional timeout. Returns the received message"""
         self._event.wait(timeout)
+        if self._msg is None:
+            rospy.logwarn('Not receive any msg yet')
+            raise RuntimeError('Not receive any msg yet')
         return self._msg
+    def set_None(self):
+        self._msg = None
 
 if __name__ == '__main__':
     import rospy
