@@ -23,7 +23,7 @@ class InfoGetter(object):
             rospy.logwarn('Not receive any msg yet')
             raise RuntimeError('Not receive any msg yet')
         return self._msg
-    def set_None(self):
+    def reset(self):
         self._msg = None
 
 if __name__ == '__main__':

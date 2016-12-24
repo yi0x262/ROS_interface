@@ -2,7 +2,7 @@
 from InfoGetter import InfoGetter
 
 from control_msgs.msg import JointControllerState
-class JointState_getter(InfoGetter):
+class JointState_subscriber(InfoGetter):
     def __init__(self,msgname):
         super().__init__(self,msgname,JointControllerState)
     def get_msg(self):
@@ -40,8 +40,8 @@ class list_subscriber(list):
         return ret
     def reset(self):
         for i in range(len(self)):
-            self[i].set_None()
+            self[i].reset()
 
-class ImuState_list(list_subscriber):
+class ImuState_subscriber(list_subscriber):
     def __new__(self,msgnames):
         return super().__new__(msgnames,imu_states)
