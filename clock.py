@@ -15,7 +15,9 @@ class clock_manager(object):
         if dt < self.threshold:
             return
 
-        self.func(dt)
+        r = self.func(dt)
+        if r < 0:
+            self.reset()
 
     def reset(self):
         self.func.reset()
