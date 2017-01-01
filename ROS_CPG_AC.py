@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from publisher import joint_publisher
 from subscribers import list_subscriber,JointState_subscriber,ImuState_subscriber
 
@@ -32,21 +34,29 @@ class ROS_CPG_AC(object):
         return state[self.reward_index]
 
 if __name__ == '__main__':
+    import subprocess
+    def grep_command(command,grepopts):
+        #http://stackoverflow.com/questions/6780035/python-how-to-run-ps-cax-grep-something-in-python
+        p1 = subprocess.Popen(command.split(' '),stdout=subprocess.PIPE)
+        p2 = subprocess.Popen(command.split('grep {}'.format(grepopts)),stdin=p1.stdout,stdout=subprocess.PIPE)
+        p1.stdout.close()# Allow p1 to receive a SIGPIPE if p2 exits.
+        return p2.communicate()[0].decode('utf-8')
+        #Using shell=True can be dangerous.
+
 #init node
     import rospy
     rospy.init_node('ROS_CPG_AC')
 #make ROS_CPG_AC
     #make joint_names,imu_sensor_names
-    import sys
-    from config_reader import urdf_reader,config_reader
-    cr = config_reader(sys.argv[1])
-    joint_commands = ['/{}/{}/command'.format(cr.robotname(),jname) for jname in cr.jointnames()]
-    imu_topicnames = urdf_reader(sys.argv[2])
-    #init ros_cpg_ac
+    from grep_command import grep_command
+    joint_names = grep_command('rostopic list','/command').split('\n')
+    imu_names = grep_command('rostopic list','/imu').split('\n')
+    joint_states = grep_command('rostopic list','/joint_states').split('\n')[0]
+
     import numpy as np
     def def_A(o):
         return np.random.normal((o,o))
-    roscpgac = ROS_CPG_AC(def_A,'/{}/joint_states'.format(cr.robotname()),imu_names,joint_names)
+    roscpgac = ROS_CPG_AC(def_A,joint_states,imu_names,joint_names)
     #make clock_manager
     from clock import clock_manager
     c = clock_manager()

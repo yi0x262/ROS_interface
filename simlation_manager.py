@@ -1,4 +1,4 @@
-#!/usr/env/bin python3
+#!/usr/bin/env python3
 import rospy
 from control_msgs.msg import JointControllerState
 from
