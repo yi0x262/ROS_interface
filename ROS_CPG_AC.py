@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2
 
 from publisher import joint_publisher
 from subscribers import list_subscriber,JointState_subscriber,ImuState_subscriber
@@ -8,7 +8,7 @@ class input_integrater(list_subscriber):
         return [JointState_subscriber(jointstate_name),ImuState_subscriber(imu_names)]
 
 import numpy as np
-from CPG_Actor_Critic import cpg_actor_critic
+from cpg_actor_critic import cpg_actor_critic
 class ROS_CPG_AC(object):
     def __init__(self,def_A,jointstate,imus,jointcommands):
         self.input = input_integrater(jointstate,imus)
@@ -34,14 +34,6 @@ class ROS_CPG_AC(object):
         return state[self.reward_index]
 
 if __name__ == '__main__':
-    import subprocess
-    def grep_command(command,grepopts):
-        #http://stackoverflow.com/questions/6780035/python-how-to-run-ps-cax-grep-something-in-python
-        p1 = subprocess.Popen(command.split(' '),stdout=subprocess.PIPE)
-        p2 = subprocess.Popen(command.split('grep {}'.format(grepopts)),stdin=p1.stdout,stdout=subprocess.PIPE)
-        p1.stdout.close()# Allow p1 to receive a SIGPIPE if p2 exits.
-        return p2.communicate()[0].decode('utf-8')
-        #Using shell=True can be dangerous.
 
 #init node
     import rospy

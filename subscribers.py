@@ -1,32 +1,34 @@
 #all class's get_msg() return not-nested list
+import rospy
 from InfoGetter import InfoGetter
 
+class subscriber(InfoGetter,object):
+    def __init__(self,msgname,msgtype):
+        super(subscriber,self).__init__()
+        rospy.Subscriber(msgname,msgtype,self)
+
+
 from control_msgs.msg import JointControllerState
-class JointState_subscriber(InfoGetter):
+class JointState_subscriber(subscriber,object):
     def __init__(self,msgname):
-        super().__init__(self,msgname,JointControllerState)
+        super(JointState_subscriber,self).__init__(msgname,JointControllerState)
     def get_msg(self):
-        data = super().get_msg()
-        ret = list()
-        ret.extend(data['position'])
-        ret.extend(data['velocity'])
-        ret.extend(data['effort'])
-        return ret
+        data = super(JointState_subscriber,self).get_msg()
+        return [*data['position'],*data['velocity'],*data['effort']]
 
 def get_xyz(dictionary):
     return [dictionary['x'],dictionary['y'],dictionary['z']]
 
 from sensor_msgs.msg import Imu
-class imu_states(InfoGetter):
+class imu_states(subscriber):
     def __init__(self,msgname):
-        super().__init__(self,msgname,Imu)
+        super(imu_states,self).__init__(self,msgname,Imu)
     def get_msg(self):
-        data = super().get_msg()
-        ret = list()
-        ret.extend(get_xyz(data['orientation']))
-        ret.extend(get_xyz(data['angular_velocity']))
-        ret.extend(get_xyz(data['linear_acceleration']))
-        return ret
+        data = super(imu_states,self).get_msg()
+        ori = get_xyz(data['orientation'])
+        ang = get_xyz(data['angular_velocity'])
+        lin = get_xyz(data['linear_acceleration'])
+        return list(*ori,*ang,*lin)
 
 class list_subscriber(list):
     def __new__(self,msgnames,info_class):

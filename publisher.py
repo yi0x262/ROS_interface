@@ -1,8 +1,10 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2
 import rospy
 
 from abc import ABCMeta,abstractmethod
-class list_publisher(list,metaclass=ABCMeta):
+#class list_publisher(list,metaclass=ABCMeta):
+class list_publisher(list):
+    __metaclass__=ABCMeta
     def __new__(self,msgnames,msgtype,queue_size=10):
         return [rospy.Publisher(name,msgtype,queue_size=queue_size)]
     @abstractmethod
