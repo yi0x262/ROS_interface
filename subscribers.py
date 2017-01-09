@@ -33,8 +33,8 @@ class imu_states(subscriber):
         return ori_pos + ang_vel + lin_acc
 
 class list_subscriber(list):
-    def __init__(self,msgnames,info_class):
-        super(list_subscriber,self).__init__([info_class(name) for name in msgnames])
+    def __init__(self,instances):
+        super(list_subscriber,self).__init__([i for i in instances])
     def get_msg(self):
         ret = list()
         for sub in self:
@@ -50,7 +50,7 @@ class list_subscriber(list):
 
 class ImuState_subscriber(list_subscriber):
     def __init__(self,msgnames):
-        super(ImuState_subscriber,self).__init__(msgnames,imu_states)
+        super(ImuState_subscriber,self).__init__([imu_states(name) for name in msgnames])
 
 
 

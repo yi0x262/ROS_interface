@@ -12,6 +12,7 @@ class list_publisher(list,object):
         pass
 
 from std_msgs.msg import Float64
+import math
 class joint_publisher(list_publisher,object):
     def __init__(self,msgnames,queue_size=10):
         super(joint_publisher,self).__init__(msgnames,Float64,queue_size=queue_size)
@@ -28,7 +29,8 @@ class joint_publisher(list_publisher,object):
         for pub,datum in zip(self,data):
             print 'pub {} as {}'.format(datum,str(pub))
             print Float64(datum)
-            pub.publish(Float64(datum))
+            if not math.isnan(datum):
+                pub.publish(Float64(datum))
 
 if __name__ == '__main__':
     rospy.init_node('publisher_test')

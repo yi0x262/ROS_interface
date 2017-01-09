@@ -1,14 +1,12 @@
 #manage gazebo simulator's clock
 import rospy
-from rosgraph_msgs.msg import Clock
-
-from InfoGetter import InfoGetter
 
 class clock_manager(object):
     def __init__(self,func,threshold):
         self.clock = clock_getter()
         self.threshold = threshold
         self.func = func
+
 
     def __call__(self):
         dt = self.clock.get_msg()
@@ -23,14 +21,22 @@ class clock_manager(object):
         self.func.reset()
         self.clock.reset()
 
-class clock_getter(InfoGetter):
+from InfoGetter import InfoGetter
+from rosgraph_msgs.msg import Clock
+
+class clock_getter(InfoGetter,object):
     def __init__(self):
-        self.lasttime = 0
-        rospy.Subscriber('/clock',Clock,super().__call__)
+        super(clock_getter,self).__init__()
+        rospy.Subscriber('/clock',Clock,super(clock_getter,self).__call__)
+        self.reset()
     def get_msg(self):
-        now = self.get_msg()
+        now = super(clock_getter,self).get_msg().clock
+        now = self.clock2float(now)
+        print 'clock,now:',now
         dt = now - self.lasttime
         self.lasttime = now
         return dt
     def reset(self):
-        self.lasttime = 0
+        self.lasttime = self.clock2float(super(clock_getter,self).get_msg().clock)
+    def clock2float(self,clock):
+        return clock.secs + 10e-9*clock.nsecs
