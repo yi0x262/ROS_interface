@@ -32,7 +32,6 @@ class clock_getter(InfoGetter,object):
     def get_msg(self):
         now = super(clock_getter,self).get_msg().clock
         now = self.clock2float(now)
-        print 'clock,now:',now
         dt = now - self.lasttime
         self.lasttime = now
         return dt

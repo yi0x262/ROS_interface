@@ -27,8 +27,8 @@ class joint_publisher(list_publisher,object):
             raise IndexError('in joint_pub : data is not capable')
         #publish
         for pub,datum in zip(self,data):
-            print 'pub {} as {}'.format(datum,str(pub))
-            print Float64(datum)
+            #print 'pub {} as {}'.format(datum,str(pub))
+            #print Float64(datum)
             if not math.isnan(datum):
                 pub.publish(Float64(datum))
 

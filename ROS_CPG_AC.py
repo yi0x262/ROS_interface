@@ -48,8 +48,8 @@ class ROS_CPG_AC(object):
         self.gazebo_reset()
         self.unpause_physics()
 
-print 'ros_cpg_accccccccccccccccccccccccccccccccccccccccccccccc'
-if __name__ == '__main__':
+#if __name__ == '__main__':
+if 1:
 #if __name__ == 'ros_cpg_ac':
 
 #init node
@@ -71,6 +71,12 @@ if __name__ == '__main__':
 #make clock_manager
     from clock import clock_manager
     c = clock_manager(roscpgac,0.05)
+    c.reset()
     while 1:
         c()
-        rospy.sleep(0.01)
+        continue
+        try:
+            rospy.sleep(0.01)
+        except rospy.exceptions.ROSTimeMovedBackwardsException,e:
+            rospy.logwarn(e)
+            #c.reset()
